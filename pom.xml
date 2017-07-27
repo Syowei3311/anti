@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>dna.manager</groupId>
+    <artifactId>anti-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>${project.artifactId}</name>
+    <modules>
+        <module>anti-base</module>
+        <module>anti-web</module>
+        <module>anti-api</module>
+        <module>anti-framework</module>
+    </modules>
+    <properties>
+        <spring.version>4.2.4.RELEASE</spring.version>
+        <hibernate.version>4.2.0.Final</hibernate.version>
+        <log4j.version>1.7.2</log4j.version>
+        <jackson.version>2.7.4</jackson.version>
+        <dubbo.version>2.8.4</dubbo.version>
+        <zkclient.version>0.8</zkclient.version>
+        <zookeeper.version>3.4.6</zookeeper.version>
+        <fastjson.version>1.2.35</fastjson.version>
+        <javassist.version>3.21.0-GA</javassist.version>
+        <jstl.version>1.2</jstl.version>
+        <commons-lang3.version>3.5</commons-lang3.version>
+        <commons-collections4.version>4.0</commons-collections4.version>
+
+        <!-- for maven compiler plugin -->
+        <plugin.version>2.5</plugin.version>
+        <java_source_version>1.8</java_source_version>
+        <java_target_version>1.8</java_target_version>
+        <file_encoding>UTF-8</file_encoding>
+    </properties>
+    <dependencies>
+        <!-- JUnit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- json工具 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson.version}</version>
+        </dependency>
+
+        <!-- Log4j -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <!-- Apache Commons -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${commons-collections4.version}</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <!-- 清理插件的使用，maven3.0.4会默认使用2.4.1版本的clean插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>${plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>auto-clean</id>
+                        <!-- clean生命周期clean阶段 -->
+                        <phase>clean</phase>
+                        <goals>
+                            <!-- 执行clean插件的clean目标 -->
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- maven-resources-plugin在maven3.0.4中默认使用2.5版本的resources -->
+
+            <!-- 编译插件的使用，maven3.0.4会默认使用2.3.2版本的compile插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${plugin.version}</version>
+                <configuration>
+                    <!-- 源代码使用的jdk版本 -->
+                    <source>${java_source_version}</source>
+                    <!-- 构建后生成class文件jdk版本 -->
+                    <target>${java_target_version}</target>
+                </configuration>
+            </plugin>
+
+            <!-- maven-surefire-plugin插件，maven3.0.4默认使用2.10版本的surefire插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${plugin.version}</version>
+                <configuration>
+                    <!-- 改变测试报告生成目录 ，默认为target/surefire-reports-->
+                    <!-- project.build.directory表示maven的属性，这里指的是构建的目录下面test-reports，project.build.directory就是pom标签的值 -->
+                    <reportsDirectory>${project.build.directory}/test-reports</reportsDirectory>
+                </configuration>
+            </plugin>
+            <!-- war包插件的使用，maven3.0.4会默认使用xxx版本的war插件，建议配置编码格式和打包名称 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <!-- 利用属性传递版本号 -->
+                <version>${plugin.version}</version>
+                <configuration>
+                    <!-- 设置编码 -->
+                    <resourceEncoding>UTF-8</resourceEncoding>
+                    <!-- 设置名称 -->
+                    <warName>${project.artifactId}</warName>
+                </configuration>
+            </plugin>
+            <!-- maven jar plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <addMavenDescriptor>true</addMavenDescriptor>
+                        <index>true</index>
+                        <manifest>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <!-- maven-install-plugin插件一般不需要配置,maven3.0.4默认使用2.3.1版本的install插件 -->
+
+            <!-- 部署插件的使用，maven3.0.4会默认使用2.7版本的deploy插件 -->
+            <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-deploy-plugin</artifactId>-->
+            <!--<version>${plugin.version}</version>-->
+            <!--<configuration>-->
+            <!--&lt;!&ndash; 更新元数据 &ndash;&gt;-->
+            <!--<updateReleaseInfo>true</updateReleaseInfo>-->
+            <!--</configuration>-->
+            <!--</plugin>-->
+
+        </plugins>
+    </build>
+
+</project>
